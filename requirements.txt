@@ -144,7 +144,6 @@ python-http-client==3.3.7
 pyttsx3==2.98
 pytz==2024.1
 pyvista==0.44.2
-pywin32==310
 PyYAML==6.0.2
 qrcode==7.4.2
 referencing==0.35.1
