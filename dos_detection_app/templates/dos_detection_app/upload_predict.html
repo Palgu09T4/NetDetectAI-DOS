@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>DoS Attack Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            background: url("{% static 'dos_detection_app/images/front.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            padding: 30px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .hero {
+            background-color: #e0f2fe;
+            padding: 40px 20px 60px;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            color: #003366;
+            margin-top: 20px;
+        }
+        .btn-custom {
+            min-width: 160px;
+            font-weight: 500;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: none;
+            background-color: white;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .counts {
+            font-size: 1.1rem;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .counts span {
+            font-weight: 600;
+        }
+        .counts .normal {
+            color: #28a745;
+        }
+        .counts .dos {
+            color: #dc3545;
+        }
+        .csv-columns {
+            font-family: 'Courier New', Courier, monospace;
+            color: #007bff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .csv-columns li {
+            margin-bottom: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Top Navigation -->
+    <div class="d-flex justify-content-end align-items-center mb-4">
+        {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}" class="btn btn-success btn-lg btn-custom">Login</a>
+        {% endif %}
+    </div>
+
+    <div class="hero">
+        <h1>DoS Attack Detection</h1>
+        <p class="lead fw-bold">Upload your flow-based network traffic or use manual input to detect potential DoS attacks</p>
+    </div>
+
+    <!-- Logout Button -->
+    {% if user.is_authenticated %}
+        <div class="text-start mb-4">
+            <a href="{% url 'logout' %}" class="btn btn-primary btn-lg px-5">Logout</a>
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <!-- Option Buttons -->
+    <div class="text-center mb-5">
+        <button class="btn btn-primary btn-lg btn-custom me-3" id="uploadCsvBtn">
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="24" />
+            Upload CSV
+        </button>
+
+        <button class="btn btn-success btn-lg btn-custom me-3" id="manualEntryBtn">
+            <img src="https://cdn-icons-png.flaticon.com/512/545/545705.png" width="24" />
+            Manual Entry
+        </button>
+
+        {% if user.is_authenticated %}
+        <button class="btn btn-primary btn-lg btn-custom me-3" onclick="window.location.href='{% url 'upload_history' %}'" style="color: white">
+           <img src="https://cdn-icons-png.flaticon.com/512/1827/1827951.png" width="24"
+             style="filter: invert(86%) sepia(37%) saturate(7424%) hue-rotate(300deg) brightness(102%) contrast(101%);" />
+              User History
+       </button>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <!-- CSV Upload Section -->
+    <div id="csvSection" style="display: none;">
+        <div class="card">
+            <h5>Upload CSV File for Detection</h5>
+            <div class="alert alert-warning" role="alert" style="font-size: 0.9rem;">
+                <strong>Tip:</strong> We recommend using <a href="https://www.wireshark.org/" target="_blank">Wireshark</a> to export flows as CSV.
+            </div>
+            <div class="alert alert-info" role="alert">
+                <strong>CSV file should contain the following columns:</strong>
+                <ul class="csv-columns">
+                    <li><code>No.</code></li>
+                    <li><code>Time</code></li>
+                    <li><code>Source</code></li>
+                    <li><code>Destination</code></li>
+                    <li><code>Protocol</code></li>
+                    <li><code>Length</code></li>
+                    <li><code>Flow Duration</code></li>
+                    <li><code>Flow_Byts/s</code></li>
+                    <li><code>Tot_Fwd_Pkts</code></li>
+                    <li><code>Tot_Bwd_Pkts</code></li>
+                    <li><code>Fwd_Pkt_Len_Max</code></li>
+                    <li><code>Bwd_Pkt_Len_Max</code></li>
+                    <li><code>Fwd_IAT_Mean</code></li>
+                    <li><code>Bwd_IAT_Mean</code></li>
+                    <li><code>SYN_Flag_Cnt</code></li>
+                    <li><code>RST_Flag_Cnt</code></li>
+                    <li><code>ACK_Flag_Cnt</code></li>
+                    <li><code>Flow_Pkts/s</code></li>
+                    <li><code>Info</code></li>
+                </ul>
+            </div>
+
+            <!-- Updated CSV Form -->
+            <form method="POST" enctype="multipart/form-data" action="{% url 'upload_and_predict' %}">
+                {% csrf_token %}
+                <input type="file" name="csv_file" class="form-control mb-3" required accept=".csv" />
+                <button type="submit" class="btn btn-success btn-custom" name="predict_csv">Predict</button>
+            </form>
+        </div>
+
+        {% if csv_ready %}
+            <div class="alert alert-success mt-3">
+                ✅ Prediction complete!
+                <a href="{{ download_link }}" class="btn btn-success btn-sm">Download Full CSV</a>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <h5 class="text-center">Summary Chart</h5>
+                        <canvas id="resultChart"></canvas>
+                        <div class="counts">
+                            <span class="normal">Normal Count: {{ normal_count }}</span>
+                            <span class="dos">DoS Count: {{ dos_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Manual Entry Section -->
+    <div id="manualSection" style="display: none;">
+        <div class="card">
+            <h5>Manual Input for Single Flow Prediction</h5>
+
+            <!-- Updated Manual Form -->
+            <form method="POST" action="{% url 'upload_and_predict' %}">
+                {% csrf_token %}
+                <div class="row">
+                    {% for field in manual_input_fields %}
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ field|title }}</label>
+                        <input type="number" step="any" name="{{ field }}" class="form-control" required />
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-warning btn-custom" name="predict_manual">Predict Manually</button>
+            </form>
+        </div>
+
+        {% if manual_prediction %}
+        <div class="card mt-3">
+            <h5>Manual Prediction Result:</h5>
+            <p><strong>Prediction:</strong>
+                {% if manual_prediction == 'DoS Attack' %}
+                    <span class="badge bg-danger">{{ manual_prediction }}</span>
+                {% else %}
+                    <span class="badge bg-success">{{ manual_prediction }}</span>
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    window.showSection = function(section) {
+        document.getElementById('csvSection').style.display = section === 'csv' ? 'block' : 'none';
+        document.getElementById('manualSection').style.display = section === 'manual' ? 'block' : 'none';
+    }
+
+    document.getElementById('uploadCsvBtn').addEventListener('click', function () {
+        {% if user.is_authenticated %}
+            window.showSection('csv');
+        {% else %}
+            window.location.href = "{% url 'login' %}?next={{ request.path }}";
+        {% endif %}
+    });
+
+    document.getElementById('manualEntryBtn').addEventListener('click', function () {
+        {% if user.is_authenticated %}
+            window.showSection('manual');
+        {% else %}
+            window.location.href = "{% url 'login' %}?next={{ request.path }}";
+        {% endif %}
+    });
+
+    {% if csv_ready %}
+        window.showSection('csv');
+    {% elif manual_prediction %}
+        window.showSection('manual');
+    {% else %}
+        {% if user.is_authenticated %}
+            window.showSection('csv');
+        {% else %}
+            window.showSection('manual');
+        {% endif %}
+    {% endif %}
+
+    {% if csv_ready %}
+    new Chart(document.getElementById('resultChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Normal', 'DoS'],
+            datasets: [{
+                label: 'Detection Result',
+                data: [{{ normal_count }}, {{ dos_count }}],
+                backgroundColor: ['#28a745', '#dc3545']
+            }]
+        }
+    });
+    {% endif %}
+</script>
+</body>
+</html>

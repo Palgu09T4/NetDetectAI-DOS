@@ -1,0 +1,76 @@
+{% if user.is_authenticated %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+    h3 {
+        text-align: center;
+        color: #222;
+        margin-bottom: 20px;
+    }
+    table.upload-history {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    table.upload-history thead {
+        background-color: #007bff;
+        color: white;
+    }
+    table.upload-history th, table.upload-history td {
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    table.upload-history tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    p {
+        text-align: center;
+        font-size: 1.1em;
+    }
+</style>
+
+<h3>Your Upload History</h3>
+{% if user_uploads %}
+    <table class="upload-history">
+        <thead>
+            <tr>
+                <th>Uploaded File</th>
+                <th>Original Filename</th>
+                <th>Uploaded At</th>
+                <th>DoS Attacks Detected</th>
+                <th>Normal Flows</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for upload in user_uploads %}
+            <tr>
+                <td><a href="{{ upload.csv_file.url }}" target="_blank">View File</a></td>
+                <td>{{ upload.original_filename }}</td>
+                <td>{{ upload.uploaded_at|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ upload.dos_count }}</td>
+                <td>{{ upload.normal_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No uploads yet.</p>
+{% endif %}
+{% else %}
+<p>Please <a href="{% url 'login' %}">login</a> to view your upload history.</p>
+{% endif %}

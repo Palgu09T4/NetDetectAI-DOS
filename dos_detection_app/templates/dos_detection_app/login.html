@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #4a90e2, #145d9d);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        .login-container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 25px;
+            color: #145d9d;
+            font-weight: 700;
+        }
+        form {
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+            margin-bottom: 18px;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 6px rgba(74,144,226,0.5);
+        }
+        button[type="submit"] {
+            width: 100%;
+            background-color: #145d9d;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0f466e;
+        }
+        .signup-link {
+            margin-top: 20px;
+            display: block;
+            font-size: 0.9rem;
+            color: #555;
+            text-align: center;
+        }
+        .signup-link a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <label for="id_username">Username</label>
+            <input type="text" name="username" id="id_username" required autofocus />
+
+            <label for="id_password">Password</label>
+            <input type="password" name="password" id="id_password" required />
+
+            <button type="submit">Login</button>
+        </form>
+        <a href="{% url 'signup' %}" class="signup-link">Don't have an account? Sign up</a>
+        <a href="{% url 'password_reset' %}">Forgot Password?</a>
+
+    </div>
+</body>
+</html>
