@@ -1,5 +1,10 @@
 # Ignore Python virtual environment folder
 
+_pycache__/
+*.py[cod]
+
+# SQLite database file
+db.sqlite3
 
 
 # Environment variables
