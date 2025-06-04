@@ -100,7 +100,7 @@ mysql-connector-python==9.2.0
 namex==0.0.8
 narwhals==1.22.0
 networkx==3.4.2
-numpy==2.0.2
+numpy==1.26.4
 openai==0.28.0
 opencv-python==4.11.0.86
 opensearch-py==2.8.0
@@ -145,7 +145,6 @@ python-http-client==3.3.7
 pyttsx3==2.98
 pytz==2024.1
 pyvista==0.44.2
-pywin32==310
 PyYAML==6.0.2
 qrcode==7.4.2
 referencing==0.35.1
