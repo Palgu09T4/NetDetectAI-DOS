@@ -133,7 +133,6 @@ Pygments==2.19.1
 pymongo==4.11.1
 PyMySQL==1.1.1
 pyparsing==3.2.1
-pypiwin32==223
 pypng==0.20220715.0
 PyQRCode==1.2.1
 pyshark==0.4.3
