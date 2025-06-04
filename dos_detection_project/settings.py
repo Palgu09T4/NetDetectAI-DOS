@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://netdetectai-dos-1.onrender.com']
+ALLOWED_HOSTS = ['netdetectai-dos-1.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Static files (CSS, JavaScript, Images)
