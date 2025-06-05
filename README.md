@@ -111,7 +111,7 @@ Includes:
 | --------------- | -------------------------------------------------- |
 | Frontend        | HTML, CSS, Bootstrap, Chart.js                     |
 | Backend         | Django, Django REST Framework                      |
-| ML Frameworks   | Scikit-learn, Pandas, NumPy, Matplotlib            |
+| ML Frameworks   | Scikit-learn, Pandas, NumPy        |
 | Data Collection | **Wireshark** (for capturing real network traffic) |
 | Notebook Env    | Jupyter Notebook                                   |
 | Deployment      | Render (Free Tier)                                 |
