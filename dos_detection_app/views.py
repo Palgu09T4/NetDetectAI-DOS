@@ -113,7 +113,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+import re
 def signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -121,18 +121,34 @@ def signup(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
+        # Check if passwords match
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
+        # Check if username exists
         elif User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists.")
+        # Check if email exists
         elif User.objects.filter(email=email).exists():
             messages.error(request, "Email already in use.")
+        # Password strength validation
+        elif len(password1) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
+        elif not re.search(r"[A-Z]", password1):
+            messages.error(request, "Password must contain at least one uppercase letter.")
+        elif not re.search(r"[a-z]", password1):
+            messages.error(request, "Password must contain at least one lowercase letter.")
+        elif not re.search(r"[0-9]", password1):
+            messages.error(request, "Password must contain at least one digit.")
+        elif not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password1):
+            messages.error(request, "Password must contain at least one special character.")
         else:
+            # All validations passed — create user
             User.objects.create_user(username=username, email=email, password=password1)
             messages.success(request, "Account created successfully.")
             return redirect('login')
-            
+
     return render(request, 'dos_detection_app/signup.html')
+
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
