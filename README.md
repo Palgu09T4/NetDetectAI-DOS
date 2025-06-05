@@ -8,7 +8,6 @@ How It Works
 
 ### Data Collection
 - Network traffic is captured using **Wireshark** in `.csv` format.
-- A **rule-based labeling algorithm** is applied to classify traffic as either **DoS** or **Normal**.
 
 ---
 
@@ -48,7 +47,6 @@ Built using **Django** + **Chart.js** + **Bootstrap**:
 
 ### Deployment
 - Deployed using **Render (Free Tier)** with full online functionality.
-- 🔗 **Live App**: [https://netdetectai-dos.onrender.com/](https://netdetectai-dos.onrender.com/)
 """
 
 🔗  
@@ -120,10 +118,8 @@ Includes:
 
 ---
 #Web app Screenshots
-![Screenshot 2025-06-05 224243](https://github.com/user-attachments/assets/641ac8c7-8c8b-4bc2-b61f-3fcdb097b3f4)
-![Screenshot 2025-06-05 220441](https://github.com/user-attachments/assets/79a23b03-6d15-4d06-ac8d-491ee84b331d)
 ![Screenshot 2025-06-05 220433](https://github.com/user-attachments/assets/0e3475af-6c58-4ac2-96ed-d3534e7e4358)
-![Screenshot 2025-06-05 220531](https://github.com/user-attachments/assets/1d8da0cb-e3fd-4410-90be-fa4fe8468b3a)
+![Screenshot 2025-06-05 225733](https://github.com/user-attachments/assets/8e8316c4-d284-4b11-9ebf-48d0837f2d55)
 ![Screenshot 2025-06-05 220704](https://github.com/user-attachments/assets/07718563-eaad-423f-90c4-44f0b32009cd)
 ![Screenshot 2025-06-05 221011](https://github.com/user-attachments/assets/f3a089aa-7dbc-4c71-8c1b-0def271d30b5)
 ![Screenshot 2025-06-05 220554](https://github.com/user-attachments/assets/62578792-3c83-493c-8448-da587b56968f)
