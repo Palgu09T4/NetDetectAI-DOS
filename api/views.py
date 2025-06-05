@@ -9,11 +9,19 @@ import pandas as pd
 from django.core.files.storage import default_storage
 import os
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
-# Load your trained model
-model = joblib.load('dos_rf_model.joblib')  # Adjust path if needed
-scaler = joblib.load('scaler.joblib')
+# Lazy loading: Load model/scaler only when needed
+def get_model():
+    path = os.path.join(settings.BASE_DIR, 'dos_rf_model.joblib')
+    return joblib.load(path)
+
+def get_scaler():
+    path = os.path.join(settings.BASE_DIR, 'scaler.joblib')
+    return joblib.load(path)
+
 reverse_label_mapping = {0: "Normal", 1: "DoS Attack"}
+
 
 @api_view(['POST'])
 def predict_manual(request):
@@ -21,10 +29,9 @@ def predict_manual(request):
         'Flow Duration': 'Flow_Duration',
         'Flow_Byts/s': 'Flow_Byts_s',
         'Flow_Pkts/s': 'Flow_Pkts_s'
-        # Add others if necessary
     }
 
-    data = request.data.copy()  # make mutable copy if necessary
+    data = request.data.copy()
 
     for old_key, new_key in rename_map.items():
         if old_key in data:
@@ -33,13 +40,13 @@ def predict_manual(request):
     serializer = ManualInputSerializer(data=data)
     if serializer.is_valid():
         features = list(serializer.validated_data.values())
+        model = get_model()
         prediction = model.predict([features])[0]
         result = "DoS Attack" if prediction == 1 else "Normal"
         return Response({"prediction": result})
     else:
         print("Serializer errors:", serializer.errors)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -85,6 +92,8 @@ def predict_csv(request):
 
         df_features.replace([np.inf, -np.inf], 0, inplace=True)
 
+        model = get_model()
+        scaler = get_scaler()
         X_scaled = scaler.transform(df_features.values)
         preds = model.predict(X_scaled)
         probs = model.predict_proba(X_scaled)
@@ -96,7 +105,6 @@ def predict_csv(request):
             'Probability_DOS': probs[:, 1]
         })
 
-        # Save predictions to CSV (excluding summary)
         output_dir = 'results'
         os.makedirs(default_storage.path(output_dir), exist_ok=True)
         output_filename = 'dos_predictions.csv'
@@ -104,7 +112,6 @@ def predict_csv(request):
         with default_storage.open(output_path, 'w') as f:
             results.to_csv(f, index=False)
 
-        # Generate summary for chart
         summary = {
             "Normal": int((results['Predicted_Label'] == 'Normal').sum()),
             "DoS Attack": int((results['Predicted_Label'] == 'DoS Attack').sum())
@@ -123,4 +130,3 @@ def predict_csv(request):
     finally:
         if default_storage.exists(file_path):
             default_storage.delete(file_path)
-
