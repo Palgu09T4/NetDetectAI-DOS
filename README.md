@@ -6,7 +6,7 @@ NetDetectAI-DoS is an end-to-end cybersecurity detection system designed to iden
 
 How It Works
 
-### 📥 Data Collection
+### Data Collection
 - Network traffic is captured using **Wireshark** in `.csv` format.
 - A **rule-based labeling algorithm** is applied to classify traffic as either **DoS** or **Normal**.
 
@@ -21,7 +21,7 @@ How It Works
 
 ---
 
-### 🤖 Model Training
+### Model Training
 - Trained and evaluated multiple machine learning classifiers:
   - ✅ **Random Forest** (best performance)
   - Decision Tree  
@@ -36,28 +36,28 @@ How It Works
 
 Built using **Django** + **Chart.js** + **Bootstrap**:
 
-- 📁 Upload a `.csv` file containing network traffic
-- 📊 Visualize DoS vs Normal traffic 
-- 🧪 Prediction using Random Forest (best model)
-- 📥 Download prediction results as CSV
-- 🔐 User Authentication: Sign up, Login, Password Reset
-- 📜 User history 
+- Upload a `.csv` file containing network traffic
+- Visualize DoS vs Normal traffic 
+- Prediction using Random Forest (best model)
+- Download prediction results as CSV
+- User Authentication: Sign up, Login, Password Reset
+-  User history 
     
 
 ---
 
-### 🚀 Deployment
+### Deployment
 - Deployed using **Render (Free Tier)** with full online functionality.
 - 🔗 **Live App**: [https://netdetectai-dos.onrender.com/](https://netdetectai-dos.onrender.com/)
 """
 
 🔗  
-🧠 **Best Algorithm Chosen**: Random Forest  
-📓 **Notebook**: Notebook.ipynb`
+ **Best Algorithm Chosen**: Random Forest  
+ **Notebook**: Notebook.ipynb`
 
 ---
 
-## 🧠 Machine Learning Models Used
+## Machine Learning Models Used
 
 Five machine learning algorithms were trained and evaluated:
 
@@ -89,14 +89,14 @@ The comparison was based on:
 
 ## 📂 Dataset Used
   
-- Training Purpose:training_data.csv
+- Training Purpose:training_data.csv(updated_dataset.csv in notebook)
 
    Testing Purpose:test_data.csv
 ---
 
 ## 🧪 Jupyter Notebook (Exploration & Modeling)
 
-File: `Mini Project G15.ipynb`
+File: `Notebook.ipynb`
 
 Includes:
 - EDA (Exploratory Data Analysis)
@@ -120,7 +120,7 @@ Includes:
 
 ---
 
-## 🚀 How to Run Locally
+##  How to Run Locally
 
 ```bash
 # Clone the repo
