@@ -25,7 +25,7 @@ ALLOWED_HOSTS = ['netdetectai-dos-1.onrender.com', 'localhost', '127.0.0.1']
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'dos_detection_app' / 'static',
+    
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
