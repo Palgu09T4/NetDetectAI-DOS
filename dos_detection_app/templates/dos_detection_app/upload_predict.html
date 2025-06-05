@@ -166,8 +166,8 @@
 
         {% if csv_ready %}
             <div class="alert alert-success mt-3">
-                ✅ Prediction complete!
-                <a href="{{ download_link }}" class="btn btn-success btn-sm">Download Full CSV</a>
+                 ✅ Prediction complete!
+                 <a href="{% url 'download_prediction_csv' %}" class="btn btn-success btn-sm">Download Full CSV</a>
             </div>
 
             <div class="row justify-content-center">

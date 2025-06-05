@@ -16,6 +16,8 @@ from django.conf import settings
 from .models import Upload  # your Upload model
 import uuid
 import json
+from django.http import HttpResponse
+import io
 
 def upload_and_predict(request):
     context = {'manual_input_fields': feature_columns}
@@ -27,7 +29,6 @@ def upload_and_predict(request):
     }
 
     if request.method == 'POST':
-        # --- CSV Upload Form ---
         if 'predict_csv' in request.POST:
             if 'csv_file' in request.FILES:
                 csv_file = request.FILES['csv_file']
@@ -42,20 +43,25 @@ def upload_and_predict(request):
                 file_path = fs.path(filename)
 
                 try:
+                    # Load CSV as DataFrame for renaming columns
+                    import pandas as pd
+                    df = pd.read_csv(file_path)
+
+                    # Rename columns using rename_map
+                    df.rename(columns=rename_map, inplace=True)
+
+                    # Save the renamed CSV back (optional, or pass df directly)
+                    df.to_csv(file_path, index=False)
+
+                    # Predict using your existing function (adapted to file_path or DataFrame)
                     results_df = predict_dos_from_csv(file_path)
 
-                    output_dir = os.path.join(settings.MEDIA_ROOT, 'predictions')
-                    os.makedirs(output_dir, exist_ok=True)
-                    output_filename = f"prediction_{uuid.uuid4()}.csv"
-                    output_path = os.path.join(output_dir, output_filename)
-                    results_df.to_csv(output_path, index=False)
-
-                    context['download_link'] = os.path.join(settings.MEDIA_URL, 'predictions', output_filename)
-
+                    # Count predicted labels
                     label_counts = results_df['Predicted_Label'].value_counts().to_dict()
                     context['normal_count'] = label_counts.get('Normal', 0)
                     context['dos_count'] = label_counts.get('DoS Attack', label_counts.get('DOS', 0))
 
+                    # Save upload info if user authenticated
                     if request.user.is_authenticated:
                         upload_entry = Upload.objects.create(
                             user=request.user,
@@ -64,15 +70,22 @@ def upload_and_predict(request):
                             dos_count=context['dos_count'],
                             normal_count=context['normal_count'],
                         )
-                        # Save output file to upload_entry
-                        with open(output_path, 'rb') as f:
-                            upload_entry.output_file.save(output_filename, File(f), save=True)
+                        # If your model has output_file field and you want to save prediction CSV:
+                        # output_filename = f"prediction_{uuid.uuid4()}.csv"
+                        # output_path = os.path.join(settings.MEDIA_ROOT, 'predictions', output_filename)
+                        # results_df.to_csv(output_path, index=False)
+                        # with open(output_path, 'rb') as f:
+                        #     upload_entry.output_file.save(output_filename, File(f), save=True)
+
+                    # Store prediction CSV as string in session for later download
+                    csv_buffer = io.StringIO()
+                    results_df.to_csv(csv_buffer, index=False)
+                    request.session['latest_prediction_csv'] = csv_buffer.getvalue()
 
                 except Exception as e:
                     context['error'] = f"Error processing CSV file: {str(e)}"
             else:
                 context['error'] = "No CSV file provided."
-
         # --- Manual Input Form ---
         elif 'predict_manual' in request.POST:
             try:
@@ -181,3 +194,13 @@ def user_login(request):
 def upload_history(request):
     user_uploads = Upload.objects.filter(user=request.user).order_by('-uploaded_at')
     return render(request, 'dos_detection_app/history.html', {'user_uploads': user_uploads})
+
+@login_required
+def download_prediction_csv(request):
+    csv_data = request.session.get('latest_prediction_csv')
+    if not csv_data:
+        return HttpResponse("No prediction available to download.", status=404)
+
+    response = HttpResponse(csv_data, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=prediction.csv'
+    return response
