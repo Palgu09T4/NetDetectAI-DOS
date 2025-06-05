@@ -1,12 +1,59 @@
 # NetDetectAI-DOS
-# NetDetectAI-DoS 🚀
-**AI-Powered DoS Attack Detection System (Web App + ML Model)**
+
+**AI-Powered DoS Attack Detection System**
 
 NetDetectAI-DoS is an end-to-end cybersecurity detection system designed to identify Denial of Service (DoS) attacks from network traffic data using machine learning. It includes a comparison of five ML algorithms and a deployed Django-based web application for interactive predictions.
 
+How It Works
+
+### 📥 Data Collection
+- Network traffic is captured using **Wireshark** in `.csv` format.
+- A **rule-based labeling algorithm** is applied to classify traffic as either **DoS** or **Normal**.
+
+---
+
+### ⚙️ Feature Engineering
+- Extracted key flow features such as:
+  - 'Flow Duration', 'Flow_Byts/s', 'Tot_Fwd_Pkts', 'Tot_Bwd_Pkts', 
+    'Fwd_Pkt_Len_Max', 'Bwd_Pkt_Len_Max', 'Fwd_IAT_Mean', 'Bwd_IAT_Mean',
+    'SYN_Flag_Cnt', 'RST_Flag_Cnt', 'ACK_Flag_Cnt', 'Flow_Pkts/s'
+- Processed and cleaned using **Pandas** and **NumPy**.
+
+---
+
+### 🤖 Model Training
+- Trained and evaluated multiple machine learning classifiers:
+  - ✅ **Random Forest** (best performance)
+  - Decision Tree  
+  - K-Nearest Neighbors (KNN)  
+  - Neural Network  
+  - Long Short-Term Memory (LSTM)
+- Utilized **Scikit-learn** for modeling and evaluation.
+
+---
+
+## 💻 Web Application Features
+
+Built using **Django** + **Chart.js** + **Bootstrap**:
+
+- 📁 Upload a `.csv` file containing network traffic
+- 📊 Visualize DoS vs Normal traffic 
+- 🧪 Prediction using Random Forest (best model)
+- 📥 Download prediction results as CSV
+- 🔐 User Authentication: Sign up, Login, Password Reset
+- 📜 User history 
+    
+
+---
+
+### 🚀 Deployment
+- Deployed using **Render (Free Tier)** with full online functionality.
+- 🔗 **Live App**: [https://netdetectai-dos.onrender.com/](https://netdetectai-dos.onrender.com/)
+"""
+
 🔗  
 🧠 **Best Algorithm Chosen**: Random Forest  
-📓 **Notebook**: `Mini Project G15.ipynb`
+📓 **Notebook**: Notebook.ipynb`
 
 ---
 
@@ -40,26 +87,9 @@ The comparison was based on:
 
 ---
 
-## 💻 Web Application Features
-
-Built using **Django** + **Chart.js** + **Bootstrap**:
-
-- 📁 Upload a `.csv` file containing network traffic
-- 📊 Visualize DoS vs Normal traffic 
-- 🧪 Prediction using Random Forest (best model)
-- 📥 Download prediction results as CSV
-- 🔐 User Authentication: Sign up, Login, Password Reset
-- 📜 User history
-
----
-
 ## 📂 Dataset Used
   
 - Training Purpose:training_data.csv
-- **Key Features Used**:
-  - 'Flow Duration', 'Flow_Byts/s', 'Tot_Fwd_Pkts', 'Tot_Bwd_Pkts', 
-    'Fwd_Pkt_Len_Max', 'Bwd_Pkt_Len_Max', 'Fwd_IAT_Mean', 'Bwd_IAT_Mean',
-    'SYN_Flag_Cnt', 'RST_Flag_Cnt', 'ACK_Flag_Cnt', 'Flow_Pkts/s'
 
    Testing Purpose:test_data.csv
 ---
