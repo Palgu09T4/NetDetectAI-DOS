@@ -120,8 +120,7 @@ Includes:
 
 ---
 # Web app Screenshots
-![Screenshot 2025-06-05 224243](https://github.com/user-attachments/assets/812c3aea-6296-4c1f-9641-95370baf1948)
-![Screenshot 2025-06-05 220441](https://github.com/user-attachments/assets/85d425b5-091e-44e9-9c17-20aba9771a97)
+![Screenshot 2025-06-05 224243](https://github.com/user-attachments/assets/812c3aea-6296-4c1f-9641-95370baf1948)![Screenshot 2025-06-05 220441](https://github.com/user-attachments/assets/85d425b5-091e-44e9-9c17-=20aba9771a97)
 ![Screenshot 2025-06-05 220433](https://github.com/user-attachments/assets/0e3475af-6c58-4ac2-96ed-d3534e7e4358)
 ![Screenshot 2025-06-05 220531](https://github.com/user-attachments/assets/1d8da0cb-e3fd-4410-90be-fa4fe8468b3a)
 ![Screenshot 2025-06-05 220704](https://github.com/user-attachments/assets/07718563-eaad-423f-90c4-44f0b32009cd)
